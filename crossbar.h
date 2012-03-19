@@ -4,6 +4,8 @@
 #include "cell.h"
 #include "queue.h"
 
+const int nr_queue = 8;
+
 class Stat
 {
 public:
@@ -15,21 +17,24 @@ class IQ
 {
 public:
 	Queue queue[nr_queue];
-
-	const int nr_queue = 8;
 };
 
 class OQ
 {
+public:
+	Queue queue[nr_queue];
+
 
 };
 
 class Crossbar
 {
 public:
+	void next_step();
+
+private:
 	IQ iq;
-	
-		
+	OQ oq;
 };
 
 #endif

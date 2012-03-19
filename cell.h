@@ -5,12 +5,11 @@ struct Cell
 {
 	Cell() : src(0), dest(0), size(0), birth(0), death(0) {}
 
-        int src;
-        int dest;
-        int size;
+	int src;
+	int dest;
+	int size;
 	int birth;
 	int death;
 };
-
 
 #endif
