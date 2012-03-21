@@ -2,8 +2,7 @@
 #define _QUEUE_H_
 
 #include "cell.h"
-
-const int queue_len = 100;
+#include "config.h"
 
 class Queue
 {
@@ -11,10 +10,13 @@ public:
 	Queue() : start(0), end(0) {}
 	void push(const Cell&);
 	void pop();
+	Cell& top();
+	bool empty() const;
+
 private:		
-	Cell cell[queue_len];	
-	int start;
-	int end;
+	Cell _cell[queue_len];	
+	int _start;
+	int _end;
 };
 
 #endif

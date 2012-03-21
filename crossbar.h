@@ -3,8 +3,7 @@
 
 #include "cell.h"
 #include "queue.h"
-
-const int nr_queue = 8;
+#include "config.h"
 
 class Stat
 {
@@ -16,13 +15,13 @@ public:
 class IQ
 {
 public:
-	Queue queue[nr_queue];
+	Queue _queue[nr_queue];
 };
 
 class OQ
 {
 public:
-	Queue queue[nr_queue];
+	Queue _queue[nr_queue];
 
 
 };
@@ -30,11 +29,14 @@ public:
 class Crossbar
 {
 public:
-	void next_step();
+	void nextStep();
 
 private:
-	IQ iq;
-	OQ oq;
+	void setMap(int a[nr_queue][nr_queue]);
+	
+private:
+	IQ _iq;
+	OQ _oq;
 };
 
 #endif
