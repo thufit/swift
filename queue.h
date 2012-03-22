@@ -7,7 +7,7 @@
 class Queue
 {
 public:
-	Queue() : start(0), end(0) {}
+	Queue() : _start(0), _end(0) {}
 	void push(const Cell&);
 	void pop();
 	Cell& top();
@@ -17,6 +17,7 @@ private:
 	Cell _cell[queue_len];	
 	int _start;
 	int _end;
+
 };
 
 #endif

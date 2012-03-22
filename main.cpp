@@ -10,11 +10,14 @@ Crossbar cb;
 
 void run()
 {
+#if 0
 	for (int i = 0; i < 10; ++i)
 	{
 		cout << Util::prob_gen(0.7);
 
 	}
+#endif
+	cb.nextStep();
 }
 
 int main()

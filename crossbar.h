@@ -12,17 +12,19 @@ public:
 
 };
 
-class IQ
+struct IQ
 {
-public:
 	Queue _queue[nr_queue];
 };
 
-class OQ
+struct VOQ
 {
-public:
-	Queue _queue[nr_queue];
+	Queue _queue[nr_queue][nr_queue];
+};
 
+struct OQ
+{
+	Queue _queue[nr_queue];
 
 };
 
@@ -37,6 +39,7 @@ private:
 private:
 	IQ _iq;
 	OQ _oq;
+	VOQ _voq;
 };
 
 #endif
