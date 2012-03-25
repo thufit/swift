@@ -35,6 +35,8 @@ public:
 
 private:
 	void setMap(int a[nr_queue][nr_queue]);
+	void ingress();
+	void egress();
 	
 private:
 	IQ _iq;
