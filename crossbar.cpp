@@ -18,15 +18,15 @@ Cell generate_cell()
 void Crossbar::nextStep()
 {
 	cout << " in nextStep" << endl;
-	cout << "nr_queue = " << nr_queue << endl;
+	cout << "nr_queue = " << Simulator::nr_queue << endl;
 
-	for (int i = 0; i < nr_queue; ++i)
+	for (int i = 0; i < Simulator::nr_queue; ++i)
 	{
 		if (Util::prob_gen(generating_rate))
 		{
 			Cell c = generate_cell();
 			c.src = i;
-			c.dest = Util::uniform_gen(nr_queue);
+			c.dest = Util::uniform_gen(Simulator::nr_queue);
 			//_iq._queue[i].push(c);
 			_voq._queue[i][c.dest].push(c);
 		}
@@ -34,26 +34,26 @@ void Crossbar::nextStep()
 
 	cout << "222222222222" << endl;
 
-	int request[nr_queue][nr_queue];
+	int request[Simulator::nr_queue][Simulator::nr_queue];
 	setMap(request);
 
-	for (int i = 0; i < nr_queue; ++i)
+	for (int i = 0; i < Simulator::nr_queue; ++i)
 	{
-		for (int j = 0; j < nr_queue; ++j)
+		for (int j = 0; j < Simulator::nr_queue; ++j)
 		{
 			cout << request[i][j] << ",";
 		}
 		cout << endl;
 	}
 
-	int grant[nr_queue];
-	for (int i = 0; i < nr_queue; ++i)
+	int grant[Simulator::nr_queue];
+	for (int i = 0; i < Simulator::nr_queue; ++i)
 		grant[i] = -1;
 	Schedule::maximum_match(request, grant);
 	
 	cout << "3333333" << endl;
 
-	for (int i = 0; i < nr_queue; ++i)
+	for (int i = 0; i < Simulator::nr_queue; ++i)
 	{
 		if (grant[i] != -1)
 		{
@@ -68,15 +68,15 @@ void Crossbar::nextStep()
 }
 
 // set the request map
-void Crossbar::setMap(int a[nr_queue][nr_queue])
+void Crossbar::setMap(int a[Simulator::nr_queue][Simulator::nr_queue])
 {
-	for (int i = 0; i < nr_queue; ++i)
-		for (int j = 0; j < nr_queue; ++j)
+	for (int i = 0; i < Simulator::nr_queue; ++i)
+		for (int j = 0; j < Simulator::nr_queue; ++j)
 			a[i][j] = 0;
 
-	for (int i = 0; i < nr_queue; ++i)
+	for (int i = 0; i < Simulator::nr_queue; ++i)
 	{
-		for (int j = 0; j < nr_queue; ++j)
+		for (int j = 0; j < Simulator::nr_queue; ++j)
 		{
 			if (!_voq._queue[i][j].empty())
 			{

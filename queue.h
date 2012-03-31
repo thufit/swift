@@ -2,7 +2,7 @@
 #define _QUEUE_H_
 
 #include "cell.h"
-#include "config.h"
+#include "simulator.h"
 
 class Queue
 {
@@ -14,7 +14,7 @@ public:
 	bool empty() const;
 
 private:		
-	Cell _cell[queue_len];	
+	Cell _cell[SimulatorgetSimulator().queue_len];	
 	int _start;
 	int _end;
 

@@ -3,7 +3,7 @@
 
 #include "cell.h"
 #include "queue.h"
-#include "config.h"
+#include "simulator.h"
 
 class Stat
 {
@@ -14,17 +14,17 @@ public:
 
 struct IQ
 {
-	Queue _queue[nr_queue];
+	Queue _queue[Simulator::nr_queue];
 };
 
 struct VOQ
 {
-	Queue _queue[nr_queue][nr_queue];
+	Queue _queue[Simulator::nr_queue][Simulator::nr_queue];
 };
 
 struct OQ
 {
-	Queue _queue[nr_queue];
+	Queue _queue[Simulator::nr_queue];
 
 };
 
@@ -34,7 +34,7 @@ public:
 	void nextStep();
 
 private:
-	void setMap(int a[nr_queue][nr_queue]);
+	void setMap(int a[Simulator::nr_queue][Simulator::nr_queue]);
 	void ingress();
 	void egress();
 	
