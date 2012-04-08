@@ -6,19 +6,16 @@ class Simulator
 {
 public:
 	static Simulator* getSimulator();
+	static void elaspe();
+	static long getTime();
 
 protected:
 	Simulator();
 
-public:
-	static const int nr_queue = 8;
-	static const int queue_len = 100;
-
 private:
 	static Simulator * _sim;
+	static long _time;
 };
-
-Simulator* Simulator::_sim = 0;
 
 
 #endif

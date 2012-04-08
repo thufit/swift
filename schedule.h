@@ -3,13 +3,14 @@
 
 #include<cstdio>
 #include<cstring>
-#include "simulator.h"
+
+#include "config.h"
 
 namespace Schedule
 {
-	void maximum_match(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue]);
-	void PIM(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue]);	
-	void iSLIP(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue]);
+	void maximum_match(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);
+	void PIM(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);	
+	void iSLIP(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);
 	void mwm();
 }
 

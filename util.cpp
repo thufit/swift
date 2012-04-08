@@ -25,8 +25,10 @@ long Util::get_current_time()
 	return g_current_time;
 }
 
+#if 0
 // Time elapse 1 cycle
 void Util::time_elapse()
 {
 	++g_current_time;
 }
+#endif

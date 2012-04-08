@@ -10,7 +10,7 @@ namespace Util
 	int prob_gen(double p);
 	int uniform_gen(int u);
 	long get_current_time();
-	void time_elapse();
+	//void time_elapse();
 }
 
 #endif

@@ -36,22 +36,22 @@ static bool can(int t)
     return false;
 }
 
-void Schedule::maximum_match(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue])
+void Schedule::maximum_match(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue])
 {
     int num = 0;
-	n = Simulator::nr_queue;
-	m = Simulator::nr_queue;
+	n = Config::nr_queue;
+	m = Config::nr_queue;
 
-	for (int i = 0; i < Simulator::nr_queue; ++i)
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+	for (int i = 0; i < Config::nr_queue; ++i)
+		for (int j = 0; j < Config::nr_queue; ++j)
 			map[i][j] = request[i][j];
 
     memset(link, -1, sizeof(link));
 
 	cout << "map = ";
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+		for (int j = 0; j < Config::nr_queue; ++j)
 		{
 			cout << map[i][j] << ",";
 		}
@@ -65,7 +65,7 @@ void Schedule::maximum_match(int request[Simulator::nr_queue][Simulator::nr_queu
             num++;
     }
 
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
 		cout << "link[" << i << "] = " << link[i] << endl;
 		if (link[i] != -1)
@@ -79,17 +79,17 @@ void Schedule::maximum_match(int request[Simulator::nr_queue][Simulator::nr_queu
 }
 
 // Parallel Iterative Matching
-void Schedule::PIM(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue])
+void Schedule::PIM(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue])
 {
-	int matched[Simulator::nr_queue] = {0};
+	int matched[Config::nr_queue] = {0};
 	
-	vector<int> r[Simulator::nr_queue];
-	vector<int> g[Simulator::nr_queue];
+	vector<int> r[Config::nr_queue];
+	vector<int> g[Config::nr_queue];
 
 	// Step 1: Request
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+		for (int j = 0; j < Config::nr_queue; ++j)
 		{
 			if (request[i][j] == 1)
 				g[j].push_back(i);
@@ -97,14 +97,14 @@ void Schedule::PIM(int request[Simulator::nr_queue][Simulator::nr_queue], int gr
 	}
 
 	// Step 2: Grant
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
 		int t = Util::uniform_gen(g[i].size());
 		r[g[i][t]].push_back(i);
 	}
 
 	// Step 3: Accept
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
 		if (r[i].size() >= 1)
 		{
@@ -120,22 +120,22 @@ void Schedule::PIM(int request[Simulator::nr_queue][Simulator::nr_queue], int gr
 
 }
 
-void Schedule::iSLIP(int request[Simulator::nr_queue][Simulator::nr_queue], int grant[Simulator::nr_queue])
+void Schedule::iSLIP(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue])
 {
 	static int grant_pointer = 0;
 	static int accept_pointer = 0;
 
-	int matched[Simulator::nr_queue] = {0};
-	int a[Simulator::nr_queue][Simulator::nr_queue];
-	int g[Simulator::nr_queue][Simulator::nr_queue];
+	int matched[Config::nr_queue] = {0};
+	int a[Config::nr_queue][Config::nr_queue];
+	int g[Config::nr_queue][Config::nr_queue];
 
-	fill_n(&a[0][0], Simulator::nr_queue * Simulator::nr_queue, 0);
-	fill_n(&g[0][0], Simulator::nr_queue * Simulator::nr_queue, 0);
+	fill_n(&a[0][0], Config::nr_queue * Config::nr_queue, 0);
+	fill_n(&g[0][0], Config::nr_queue * Config::nr_queue, 0);
 
 	// Step 1: Request
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+		for (int j = 0; j < Config::nr_queue; ++j)
 		{
 			if (request[i][j] == 1)
 				g[j][i] = 1;
@@ -143,33 +143,33 @@ void Schedule::iSLIP(int request[Simulator::nr_queue][Simulator::nr_queue], int 
 	}
 
 	// Step 2: Grant
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+		for (int j = 0; j < Config::nr_queue; ++j)
 		{
 			if (g[i][grant_pointer] == 1)
 			{
 				a[grant_pointer][i] = 1;
-				grant_pointer = (grant_pointer + 1) % Simulator::nr_queue;
+				grant_pointer = (grant_pointer + 1) % Config::nr_queue;
 				
 				break;
 			}
-			grant_pointer = (grant_pointer + 1) % Simulator::nr_queue;
+			grant_pointer = (grant_pointer + 1) % Config::nr_queue;
 		}
 	}
 
 	// Step 3: Accept
-	for (int i = 0; i < Simulator::nr_queue; ++i)
+	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		for (int j = 0; j < Simulator::nr_queue; ++j)
+		for (int j = 0; j < Config::nr_queue; ++j)
 		{
 			if (a[i][accept_pointer] == 1)
 			{
 				grant[i] = accept_pointer;
-				accept_pointer = (accept_pointer + 1) % Simulator::nr_queue;
+				accept_pointer = (accept_pointer + 1) % Config::nr_queue;
 				break;
 			}
-			accept_pointer = (accept_pointer + 1) % Simulator::nr_queue;
+			accept_pointer = (accept_pointer + 1) % Config::nr_queue;
 
 		}
 

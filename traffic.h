@@ -8,11 +8,10 @@
 
 using std::vector;
 
-class Traffic
+namespace Traffic
 {
-public:
-	int BernoulliDistribution(vector<Cell>& vc);
+	void BernoulliDistribution(vector<Cell>& vc, double p);
 	int OnOff();
-};
+}
 
 #endif
