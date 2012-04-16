@@ -32,18 +32,27 @@ struct OQ
 class Crossbar
 {
 public:
+	enum toc {InputQueue, OutputQueue, VirtualOutputQueue}; // type of corssbar
+
+public:
 	void nextStep();
 	void ingress();
 	void egress();
+	void setType(toc t);
+	void setSpeedup(int s);
 
 private:
 	void setMap(int a[Config::nr_queue][Config::nr_queue]);
+
 	
 private:
-	enum toc {IQ, OQ, VOQ}; // type of corssbar
+
+	toc type;
 	IQ _iq;
 	OQ _oq;
 	VOQ _voq;
+	int _speedup;
+
 };
 
 #endif

@@ -19,6 +19,11 @@ void run()
 
 	}
 #endif
+	
+	// Output Queuing
+	
+	cb.setType(Crossbar::OutputQueue);
+
 	cb.nextStep();
 }
 

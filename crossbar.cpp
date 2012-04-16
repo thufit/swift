@@ -113,3 +113,13 @@ void Crossbar::egress()
 {
 
 }
+
+void Crossbar::setType(toc t)
+{
+	type = t;
+}
+
+void Crossbar::setSpeedup(int s)
+{
+	_speedup = s;
+}
