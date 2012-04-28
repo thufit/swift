@@ -1,5 +1,5 @@
-#ifndef _SCHEDULE_H_
-#define _SCHEDULE_H_
+#ifndef SCHEDULE_H_
+#define SCHEDULE_H_
 
 #include<cstdio>
 #include<cstring>

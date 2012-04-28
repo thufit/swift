@@ -9,70 +9,69 @@ using namespace std;
 Cell generate_cell()
 {
 	Cell c;
-	c.setBirth(Util::get_current_time());
+	c.setBirth(util::get_current_time());
 	c.setSize(Config::default_cell_size);
 	return c;
 }
 
-void Crossbar::nextStep()
+void Crossbar::NextStep()
 {
-	cout << " in nextStep" << endl;
-	cout << "nr_queue = " << Config::nr_queue << endl;
 
-#if 0
-	for (int i = 0; i < Config::nr_queue; ++i)
-	{
-		if (Util::prob_gen(Config::generating_rate))
-		{
-			Cell c = generate_cell();
-			c.setSrc(i);
-			c.setDest(Util::uniform_gen(Config::nr_queue));
-			//_iq._queue[i].push(c);
-			_voq._queue[i][c.getDest()].push(c);
-		}
-	}
-
-#endif
+	//cout << " in nextStep" << endl;
+	//cout << "nr_queue = " << Config::nr_queue << endl;
 
 
 
-	cout << "222222222222" << endl;
+	//for (int i = 0; i < Config::nr_queue; ++i)
+	//{
+	//	if (Util::prob_gen(Config::generating_rate))
+	//	{
+	//		Cell c = generate_cell();
+	//		c.setSrc(i);
+	//		c.setDest(Util::uniform_gen(Config::nr_queue));
+	//		//_iq._queue[i].push(c);
+	//		_voq._queue[i][c.getDest()].push(c);
+	//	}
+	//}
+
+
+	//cout << "222222222222" << endl;
 
 	int request[Config::nr_queue][Config::nr_queue];
 	setMap(request);
 
-	for (int i = 0; i < Config::nr_queue; ++i)
-	{
-		for (int j = 0; j < Config::nr_queue; ++j)
-		{
-			cout << request[i][j] << ",";
-		}
-		cout << endl;
-	}
+	//for (int i = 0; i < Config::nr_queue; ++i)
+	//{
+	//	for (int j = 0; j < Config::nr_queue; ++j)
+	//	{
+	//		cout << request[i][j] << ",";
+	//	}
+	//	cout << endl;
+	//}
 
 	int grant[Config::nr_queue];
 	for (int i = 0; i < Config::nr_queue; ++i)
 		grant[i] = -1;
 	Schedule::maximum_match(request, grant);
 	
-	cout << "3333333" << endl;
+	//cout << "3333333" << endl;
 
 	for (int i = 0; i < Config::nr_queue; ++i)
 	{
 		if (grant[i] != -1)
 		{
-			// switch the cell int the input queue
-			_iq._queue[i].pop();
-			std::cout << "queue " << i << "poped" << std::endl; 
+			// switch the cell into the input queue
+			iq_.queue_[i].pop();
+			//std::cout << "queue " << i << "poped" << std::endl; 
 		}
 	}
-	cout << "4444444444" << endl;
+	//cout << "4444444444" << endl;
 
 	//Util::time_elapse();
 }
 
 // set the request map
-void Crossbar::setMap(int a[Config::nr_queue][Config::nr_queue])
+void Crossbar::SetMap(int a[Config::nr_queue][Config::nr_queue])
 {
 	for (int i = 0; i < Config::nr_queue; ++i)
 		for (int j = 0; j < Config::nr_queue; ++j)
@@ -82,9 +81,9 @@ void Crossbar::setMap(int a[Config::nr_queue][Config::nr_queue])
 	{
 		for (int j = 0; j < Config::nr_queue; ++j)
 		{
-			if (!_voq._queue[i][j].empty())
+			if (!voq_.queue_[i][j].empty())
 			{
-				const Cell &c = _voq._queue[i][j].top();
+				const Cell &c = voq_.queue_[i][j].top();
 				a[i][c.getDest()] = 1;
 			}
 		}
@@ -92,7 +91,7 @@ void Crossbar::setMap(int a[Config::nr_queue][Config::nr_queue])
 }
 
 // ingress cells into the input buffers(queues) of crossbar
-void Crossbar::ingress()
+void Crossbar::Ingress()
 {
 	// generation and insertion
 	vector<Cell> vc(Config::nr_queue);
@@ -103,23 +102,28 @@ void Crossbar::ingress()
 		Cell& c = vc[i];
 		if (!c.empty())
 		{
-			_voq._queue[i][c.getDest()].push(c);
+			voq_.queue_[i][c.getDest()].push(c);
 		}
 	}
 
 }
 
-void Crossbar::egress()
+void Crossbar::Egress()
 {
 
 }
 
-void Crossbar::setType(toc t)
+void Crossbar::set_queuing_type(QueuingType t)
 {
-	type = t;
+	queuing_type_ = t;
 }
 
-void Crossbar::setSpeedup(int s)
+void Crossbar::set_speedup(int s)
 {
-	_speedup = s;
+	speedup_ = s;
+}
+
+void Crossbar::set_traffic_model(TrafficModel t)
+{
+	traffic_model_ = t;
 }

@@ -1,5 +1,5 @@
-#ifndef _TRAFFIC_H_
-#define _TRAFFIC_H_
+#ifndef TRAFFIC_H_
+#define TRAFFIC_H_
 
 #include <vector>
 
@@ -11,7 +11,7 @@ using std::vector;
 namespace Traffic
 {
 	void BernoulliDistribution(vector<Cell>& vc, double p);
-	int OnOff();
+	void OnOff();
 }
 
 #endif

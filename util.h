@@ -1,11 +1,11 @@
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#ifndef UTIL_H_
+#define UTIL_H_
 
 #include "boost/random.hpp"
 
 static long g_current_time = 0;
 
-namespace Util
+namespace util
 {
 	int prob_gen(double p);
 	int uniform_gen(int u);

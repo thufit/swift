@@ -1,57 +1,36 @@
-#ifndef _CROSSBAR_H_
-#define _CROSSBAR_H_
+#ifndef CROSSBAR_H_
+#define CROSSBAR_H_
 
 #include "cell.h"
 #include "queue.h"
 #include "config.h"
 #include "simulator.h"
 
-class Stat
-{
-public:
-	int xxx;
 
-};
-
-struct IQ
-{
-	Queue _queue[Config::nr_queue];
-};
-
-struct VOQ
-{
-	Queue _queue[Config::nr_queue][Config::nr_queue];
-};
-
-struct OQ
-{
-	Queue _queue[Config::nr_queue];
-
-};
 
 class Crossbar
 {
 public:
-	enum toc {InputQueue, OutputQueue, VirtualOutputQueue}; // type of corssbar
+	enum QueuingType {	InputQueue, OutputQueue, VirtualOutputQueue}; // type of corssbar
+	enum TrafficModel {	Bernoulli, OnOff};
 
-public:
-	void nextStep();
-	void ingress();
-	void egress();
-	void setType(toc t);
-	void setSpeedup(int s);
+	void NextStep();
+	void Ingress();
+	void Egress();
+
+	void set_queuing_type(QueuingType t);
+	void set_speedup(int s);
+	void set_traffic_model(TrafficModel);
 
 private:
-	void setMap(int a[Config::nr_queue][Config::nr_queue]);
+	void SetMap(int a[Config::nr_queue][Config::nr_queue]);
 
-	
-private:
-
-	toc type;
-	IQ _iq;
-	OQ _oq;
-	VOQ _voq;
-	int _speedup;
+	QueuingType queuing_type_;
+	TrafficModel traffic_model_;
+	IQ iq_;
+	OQ oq_;
+	VOQ voq_;
+	int speedup_;
 
 };
 

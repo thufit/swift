@@ -4,28 +4,28 @@
 
 void Queue::push(const Cell& c)
 {
-	if ((_end + 1) % Config::queue_len  == _start)
+	if ((end_ + 1) % Config::queue_len  == start_)
 	{
 		// do nothing, drop tail
 	}
 	else
 	{
-		_cell[_end] = c;
-		_end = (_end + 1) % Config::queue_len;
+		cell_[end_] = c;
+		end_ = (end_ + 1) % Config::queue_len;
 	}
 }
 
 void Queue::pop()
 {
-	_start = (_start + 1) % Config::queue_len;
+	start_ = (start_ + 1) % Config::queue_len;
 }
 
 Cell& Queue::top()
 {
-	return _cell[_start];
+	return cell_[start_];
 }
 
 bool Queue::empty() const
 {
-	return _start == _end;
+	return start_ == end_;
 }

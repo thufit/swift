@@ -99,7 +99,7 @@ void Schedule::PIM(int request[Config::nr_queue][Config::nr_queue], int grant[Co
 	// Step 2: Grant
 	for (int i = 0; i < Config::nr_queue; ++i)
 	{
-		int t = Util::uniform_gen(g[i].size());
+		int t = util::uniform_gen(g[i].size());
 		r[g[i][t]].push_back(i);
 	}
 
@@ -108,7 +108,7 @@ void Schedule::PIM(int request[Config::nr_queue][Config::nr_queue], int grant[Co
 	{
 		if (r[i].size() >= 1)
 		{
-			int t = Util::uniform_gen(r[i].size());
+			int t = util::uniform_gen(r[i].size());
 			grant[i] = r[i][t];
 			matched[i] = 1;
 		}

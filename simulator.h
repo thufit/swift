@@ -1,5 +1,5 @@
-#ifndef _SIMULATOR_H_
-#define _SIMULATOR_H_
+#ifndef SIMULATOR_H_
+#define SIMULATOR_H_
 
 // Sigleton simulator class
 class Simulator

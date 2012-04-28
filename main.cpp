@@ -20,11 +20,13 @@ void run()
 	}
 #endif
 	
-	// Output Queuing
-	
-	cb.setType(Crossbar::OutputQueue);
+	cb.set_queuing_type(Crossbar::InputQueue);
+	cb.set_speedup(1);	// no speedup
+	cb.set_traffic_model(Crossbar::Bernoulli);
 
-	cb.nextStep();
+	cb.NextStep();
+	sim->elaspe();
+
 }
 
 void init()
@@ -32,10 +34,11 @@ void init()
 	sim = Simulator::getSimulator();
 }
 
+
+
 int main()
 {
 	init();
-
 	run();
 
 	return 0;

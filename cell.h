@@ -1,5 +1,5 @@
-#ifndef _CELL_H_
-#define _CELL_H_
+#ifndef CELL_H_
+#define CELL_H_
 
 class Cell
 {
