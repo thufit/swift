@@ -8,33 +8,17 @@ class Queue
 {
 public:
 	Queue() : start_(0), end_(0) {}
-	void push(const Cell&);
-	void pop();
-	Cell& top();
-	bool empty() const;
+	void Push(const Cell&);
+	void Pop();
+	Cell& Top();
+	bool Empty() const;
+	int Length() const;
 
 private:		
-	Cell cell_[Config::queue_len];	
+	Cell cell_[config::kQueueLength];	
 	int start_;
 	int end_;
-
 };
 
-
-struct IQ
-{
-	Queue queue_[Config::nr_queue];
-};
-
-struct VOQ
-{
-	Queue queue_[Config::nr_queue][Config::nr_queue];
-};
-
-struct OQ
-{
-	Queue queue_[Config::nr_queue];
-
-};
 
 #endif

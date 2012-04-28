@@ -5,33 +5,34 @@
 #include "queue.h"
 #include "config.h"
 #include "simulator.h"
-
-
+#include "queuingmodel.h"
 
 class Crossbar
 {
 public:
-	enum QueuingType {	InputQueue, OutputQueue, VirtualOutputQueue}; // type of corssbar
-	enum TrafficModel {	Bernoulli, OnOff};
+	Crossbar();
+	~Crossbar();
 
 	void NextStep();
 	void Ingress();
 	void Egress();
 
-	void set_queuing_type(QueuingType t);
+	void set_queuing_type(config::QueuingType t);
 	void set_speedup(int s);
-	void set_traffic_model(TrafficModel);
+	void set_traffic_model(config::TrafficModel tm);
 
 private:
-	void SetMap(int a[Config::nr_queue][Config::nr_queue]);
+	void SetMap(int a[config::kQueueNumber][config::kQueueNumber]);
 
-	QueuingType queuing_type_;
-	TrafficModel traffic_model_;
-	IQ iq_;
-	OQ oq_;
-	VOQ voq_;
+	config::QueuingType queuing_type_;
+	config::TrafficModel traffic_model_;
+
+	//IQ iq_;
+	//OQ oq_;
+	//VOQ voq_;
+
 	int speedup_;
-
+	BasicQueuing* queuing_;
 };
 
 #endif

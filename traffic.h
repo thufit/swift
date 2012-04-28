@@ -8,7 +8,7 @@
 
 using std::vector;
 
-namespace Traffic
+namespace traffic
 {
 	void BernoulliDistribution(vector<Cell>& vc, double p);
 	void OnOff();

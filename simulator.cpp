@@ -1,28 +1,28 @@
 #include "simulator.h"
 
-Simulator* Simulator::_sim = 0;
-long Simulator::_time = 0;
+Simulator* Simulator::sim_ = 0;
+long Simulator::time_ = 0;
 
-Simulator* Simulator::getSimulator()
+Simulator* Simulator::GetSimulator()
 {
-	if (_sim == 0)
+	if (sim_ == 0)
 	{
-		_sim = new Simulator();
+		sim_ = new Simulator();
 	}
 
-	return _sim;
+	return sim_;
 }
 
 Simulator::Simulator()
 {
 }
 
-void Simulator::elaspe()
+void Simulator::Elapse()
 {
-	++_time;
+	++time_;
 }
 
-long Simulator::getTime()
+long Simulator::get_time()
 {
-	return _time;
+	return time_;
 }

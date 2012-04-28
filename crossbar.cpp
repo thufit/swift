@@ -2,110 +2,151 @@
 #include "util.h"
 #include "schedule.h"
 #include "traffic.h"
+#include "simulator.h"
 
 
 using namespace std;
+extern Simulator* g_sim;
 
 Cell generate_cell()
 {
 	Cell c;
-	c.setBirth(util::get_current_time());
-	c.setSize(Config::default_cell_size);
+	c.set_birth(g_sim->get_time());
+	c.set_size(config::kDefaultCellSize);
 	return c;
+}
+
+
+Crossbar::Crossbar()
+{
+	queuing_ = NULL;
+}
+
+Crossbar::~Crossbar()
+{
+	delete queuing_;
 }
 
 void Crossbar::NextStep()
 {
 
 	//cout << " in nextStep" << endl;
-	//cout << "nr_queue = " << Config::nr_queue << endl;
+	//cout << "kQueueNumber = " << config::kQueueNumber << endl;
 
 
-
-	//for (int i = 0; i < Config::nr_queue; ++i)
+	//for (int i = 0; i < config::kQueueNumber; ++i)
 	//{
-	//	if (Util::prob_gen(Config::generating_rate))
+	//	if (Util::GenerateWithProbability(config::GeneratingRate))
 	//	{
 	//		Cell c = generate_cell();
-	//		c.setSrc(i);
-	//		c.setDest(Util::uniform_gen(Config::nr_queue));
-	//		//_iq._queue[i].push(c);
-	//		_voq._queue[i][c.getDest()].push(c);
+	//		c.set_src(i);
+	//		c.set_dest(Util::UniformGenerate(config::kQueueNumber));
+	//		//_iq._queue[i].Push(c);
+	//		_voq._queue[i][c.get_dest()].Push(c);
 	//	}
 	//}
-
-
 	//cout << "222222222222" << endl;
 
-	int request[Config::nr_queue][Config::nr_queue];
-	setMap(request);
+#if 0
+	int request[config::kPortNumber][config::kPortNumber];
+	SetMap(request);
+#endif
 
-	//for (int i = 0; i < Config::nr_queue; ++i)
+	//for (int i = 0; i < config::kQueueNumber; ++i)
 	//{
-	//	for (int j = 0; j < Config::nr_queue; ++j)
+	//	for (int j = 0; j < config::kQueueNumber; ++j)
 	//	{
 	//		cout << request[i][j] << ",";
 	//	}
 	//	cout << endl;
 	//}
 
-	int grant[Config::nr_queue];
-	for (int i = 0; i < Config::nr_queue; ++i)
+#if 0
+	int grant[config::kPortNumber];
+	for (int i = 0; i < config::kPortNumber; ++i)
 		grant[i] = -1;
-	Schedule::maximum_match(request, grant);
+	schedule::MaximumMatching(request, grant);
+#endif
+
+	if (queuing_type_ == config::kInputQueuing)
+	{
+		//queuing_->
+	}
+	else
+	{
+	}
 	
 	//cout << "3333333" << endl;
-
-	for (int i = 0; i < Config::nr_queue; ++i)
+#if 0
+	for (int i = 0; i < config::kQueueNumber; ++i)
 	{
 		if (grant[i] != -1)
 		{
 			// switch the cell into the input queue
-			iq_.queue_[i].pop();
+#if 0
+			iq_.queue_[i].Pop();
+#else
+			queuing_->Dequeue(i);
+#endif
 			//std::cout << "queue " << i << "poped" << std::endl; 
 		}
 	}
-	//cout << "4444444444" << endl;
+#endif
+	queuing_->SetMap();
+	queuing_->Switch();
 
-	//Util::time_elapse();
 }
 
+#if 0
 // set the request map
-void Crossbar::SetMap(int a[Config::nr_queue][Config::nr_queue])
+void Crossbar::SetMap(int a[config::kPortNumber][config::kPortNumber])
 {
-	for (int i = 0; i < Config::nr_queue; ++i)
-		for (int j = 0; j < Config::nr_queue; ++j)
+	for (int i = 0; i < config::kPortNumber; ++i)
+		for (int j = 0; j < config::kPortNumber; ++j)
 			a[i][j] = 0;
 
-	for (int i = 0; i < Config::nr_queue; ++i)
+	for (int i = 0; i < config::kPortNumber; ++i)
 	{
-		for (int j = 0; j < Config::nr_queue; ++j)
+		for (int j = 0; j < config::kPortNumber; ++j)
 		{
-			if (!voq_.queue_[i][j].empty())
+			if (!voq_.queue_[i][j].Empty())
 			{
-				const Cell &c = voq_.queue_[i][j].top();
-				a[i][c.getDest()] = 1;
+				const Cell &c = voq_.queue_[i][j].Top();
+				a[i][c.get_dest()] = 1;
 			}
 		}
 	}
 }
+#endif
 
 // ingress cells into the input buffers(queues) of crossbar
 void Crossbar::Ingress()
 {
 	// generation and insertion
-	vector<Cell> vc(Config::nr_queue);
-	Traffic::BernoulliDistribution(vc, Config::generating_rate);
+	vector<Cell> vc(config::kPortNumber);
+	traffic::BernoulliDistribution(vc, config::GeneratingRate);
 
+	//cout << "in Ingress" << endl;
+#if 0
 	for (int i = 0; i < (int)vc.size(); ++i)
 	{
 		Cell& c = vc[i];
-		if (!c.empty())
+		if (!c.Empty())
 		{
-			voq_.queue_[i][c.getDest()].push(c);
+			voq_.queue_[i][c.get_dest()].Push(c);
 		}
 	}
-
+#else
+	for (int i = 0; i < (int)vc.size(); ++i)
+	{
+		Cell& c = vc[i];
+		if (!c.Empty())
+		{
+			queuing_->Enqueue(i, c);
+			//cout << "input a cell\n"; 
+		}
+	}
+#endif
 }
 
 void Crossbar::Egress()
@@ -113,9 +154,24 @@ void Crossbar::Egress()
 
 }
 
-void Crossbar::set_queuing_type(QueuingType t)
+void Crossbar::set_queuing_type(config::QueuingType t)
 {
 	queuing_type_ = t;
+
+	switch (t)
+	{
+	case config::kInputQueuing:
+		queuing_ = new IQ();
+		break;
+	case config::kOutputQueuing:
+		queuing_ = new OQ();
+		break;
+	case config::kVirtualOutputQueuing:
+		queuing_ = new VOQ();
+		break;
+	default:
+		break;
+	}
 }
 
 void Crossbar::set_speedup(int s)
@@ -123,7 +179,7 @@ void Crossbar::set_speedup(int s)
 	speedup_ = s;
 }
 
-void Crossbar::set_traffic_model(TrafficModel t)
+void Crossbar::set_traffic_model(config::TrafficModel t)
 {
 	traffic_model_ = t;
 }

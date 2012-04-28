@@ -2,23 +2,25 @@
 #include "util.h"
 #include "config.h"
 
-extern Simulator* sim;
+extern Simulator* g_sim;
 
-void Traffic::BernoulliDistribution(vector<Cell>& vc, double p)
+void traffic::BernoulliDistribution(vector<Cell>& vc, double p)
 {
 	for (int i = 0; i < (int)vc.size(); ++i)
 	{
-		if (util::prob_gen(p))
+		if (util::GenerateWithProbability(p))
 		{
-			vc[i].setBirth(sim->getTime());
-			vc[i].setSrc(i);
-			vc[i].setDest(util::uniform_gen(Config::nr_queue));
+			//std::cout << " generating 1" << std::endl;
+			vc[i].set_birth(g_sim->get_time());
+			vc[i].set_src(i);
+			vc[i].set_dest(util::UniformGenerate(config::kQueueNumber));
+			//std::cout << " dest = "<< vc[i].get_dest() << std::endl;
 		}
 	}
 }
 
 
-void Traffic::OnOff()
+void traffic::OnOff()
 {
 
 }

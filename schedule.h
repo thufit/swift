@@ -6,11 +6,11 @@
 
 #include "config.h"
 
-namespace Schedule
+namespace schedule
 {
-	void maximum_match(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);
-	void PIM(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);	
-	void iSLIP(int request[Config::nr_queue][Config::nr_queue], int grant[Config::nr_queue]);
+	void MaximumMatching(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);
+	void PIM(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);	
+	void iSLIP(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);
 	void mwm();
 }
 

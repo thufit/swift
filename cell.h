@@ -4,30 +4,28 @@
 class Cell
 {
 public:
-	Cell() : _src(-1), _dest(-1), _size(-1), _birth(-1), _death(-1), _empty(true) {}
+	Cell() : src_(-1), dest_(-1), size_(-1), birth_(-1), death_(-1), empty_(true) {}
+	bool Empty() const { return empty_; }
 	
-	bool empty() const { return _empty; }
+	void set_empty(bool b = true) { empty_ = b; }
+	void set_src(int x) { set_empty(false); src_ = x; }
+	void set_dest(int x ) { set_empty(false); dest_ = x; }
+	void set_size(int x) { set_empty(false); size_ = x; }
+	void set_birth(int x) { set_empty(false); birth_ = x; }
+	void set_death(int x) {  set_empty(false); death_ = x; }
+	int get_src() const { return src_; }
+	int get_dest() const { return dest_; }
+	int get_size() const{ return size_; }
+	int get_birth() const { return birth_; }
+	int get_death() const { return death_; }
 
-	void setSrc(int x) { setEmpty(); _src = x; }
-	void setDest(int x ) { setEmpty(); _dest = x; }
-	void setSize(int x) { setEmpty(); _size = x; }
-	void setBirth(int x) { setEmpty(); _birth = x; }
-	void setDeath(int x) {  setEmpty(); _death = x; }
-
-	int getSrc() const { return _src; }
-	int getDest() const { return _dest; }
-	int getSize() const{ return _size; }
-	int getBirth() const { return _birth; }
-	int getDeath() const { return _death; }
 private:
-	void setEmpty() { _empty = true; }
-private:
-	int _src;
-	int _dest;
-	int _size;
-	int _birth;
-	int _death;
-	bool _empty;
+	int src_;
+	int dest_;
+	int size_;
+	int birth_;
+	int death_;
+	bool empty_;
 
 };
 

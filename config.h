@@ -1,12 +1,18 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-namespace Config
+namespace config
 {
-	const int nr_queue = 8;
-	const int queue_len = 100;
-	const int default_cell_size = 64;
-	const double generating_rate = 0.5;
+	const int kPortNumber = 8;
+	const int kQueueNumber = 8;
+	const int kQueueLength = 100000;
+	const int kDefaultCellSize = 64;
+
+	extern double GeneratingRate;
+	extern long simulation_duration;
+
+	enum QueuingType {	kInputQueuing, kOutputQueuing, kVirtualOutputQueuing}; // type of corssbar queuing model
+	enum TrafficModel {	kBernoulli, kOnOff};
 };
 
 #endif

@@ -2,10 +2,10 @@
 #define STATS_H_
 
 
-class Stat
+struct Stats
 {
-public:
-	int xxx;
+	long cell_count;
+	double total_delay;
 
 };
 
