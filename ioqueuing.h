@@ -12,16 +12,16 @@ public:
 
 	virtual void Enqueue(int port, const Cell& c);
 	virtual void Dequeue(int port);
-	virtual void Switch();
+	virtual void Switch(schedule::Scheduling in);
 	virtual void SetMap();
 
-	//friend void schedule::MaximumMatching(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);
+	//friend void schedule::MaximumMatching(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount]);
 
 protected:
-	Cell cell_in_[config::kPortNumber];
-	Cell cell_out_[config::kPortNumber];
-	int map_[config::kPortNumber][config::kPortNumber];	// Request map
-	int grant_[config::kPortNumber];
+	Cell cell_in_[config::kPortCount];
+	Cell cell_out_[config::kPortCount];
+	int map_[config::kPortCount][config::kPortCount];	// Request map, map[i][j] == 1 means port i want to send cell to port j
+	int grant_[config::kPortCount]; // 
 };
 
 class IQ : public BasicQueuing
@@ -32,9 +32,9 @@ public:
 	void Enqueue(int port, const Cell& c);
 	void Dequeue(int port);
 	void SetMap();
-	void Switch();
+	void Switch(schedule::Scheduling in);
 private:
-	Queue queue_[config::kPortNumber];
+	Queue queue_[config::kPortCount];
 };
 
 class OQ : public BasicQueuing
@@ -44,12 +44,11 @@ public:
 	~OQ();
 	void Enqueue(int port, const Cell& c);
 	void Dequeue(int port);
-	void Switch();
+	void SetMap();
+	void Switch(schedule::Scheduling in);
 private:
-	Queue queue_[config::kPortNumber];	// output queue
+	Queue queue_[config::kPortCount];	// output queue
 };
-
-
 
 
 class VOQ : public BasicQueuing
@@ -59,8 +58,10 @@ public:
 	~VOQ();
 	void Enqueue(int port, const Cell& c);
 	void Dequeue(int port);
+	void SetMap();
+	void Switch(schedule::Scheduling in);
 private:
-	Queue queue_[config::kPortNumber][config::kPortNumber];
+	Queue queue_[config::kPortCount][config::kPortCount];
 };
 
 #endif

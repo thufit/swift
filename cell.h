@@ -13,11 +13,14 @@ public:
 	void set_size(int x) { set_empty(false); size_ = x; }
 	void set_birth(int x) { set_empty(false); birth_ = x; }
 	void set_death(int x) {  set_empty(false); death_ = x; }
+	void set_priority(int x) { set_empty(false); priority_ = x; }
+
 	int get_src() const { return src_; }
 	int get_dest() const { return dest_; }
 	int get_size() const{ return size_; }
 	int get_birth() const { return birth_; }
 	int get_death() const { return death_; }
+	int get_priority() const { return priority_; }
 
 private:
 	int src_;
@@ -25,7 +28,13 @@ private:
 	int size_;
 	int birth_;
 	int death_;
-	bool empty_;
+	int priority_;
+	int sequence_;
+	int tag_;
+	
+	void* data_;
+
+	bool empty_;	// flag to indicate whether this cell is empty
 
 };
 

@@ -7,8 +7,8 @@
 
 namespace util
 {
-	int GenerateWithProbability(double p);
-	int UniformGenerate(int u);
+	int Probability(double p);
+	int Uniform(int u);
 
 	//long get_current_time();
 	//void time_elapse();

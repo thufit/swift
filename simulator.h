@@ -15,7 +15,7 @@ protected:
 	Simulator();
 
 private:
-	static Simulator * sim_;
+	static Simulator* sim_;
 	static long time_;
 };
 

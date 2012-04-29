@@ -4,6 +4,8 @@
 #include "crossbar.h"
 #include "util.h"
 #include "simulator.h"
+#include "config.h"
+#include "traffic.h"
 
 using namespace std;
 
@@ -16,7 +18,7 @@ void RunInputQueuing()
 //#if 0
 //	for (int i = 0; i < 10; ++i)
 //	{
-//		cout << Util::GenerateWithProbability(0.7);
+//		cout << Util::Probability(0.7);
 //
 //	}
 //#endif
@@ -29,7 +31,7 @@ void RunInputQueuing()
 	for (double p = 0; p <=1; p += 0.1)
 	{
 		cout << "p = " << p << endl;
-		config::GeneratingRate = p;
+		config::Rate = p;
 
 		for (int i = 0; i < 1000; ++i)
 		{
@@ -52,14 +54,14 @@ void RunOutputQueuing()
 {
 	Crossbar cb;
 	cb.set_queuing_type(config::kOutputQueuing);
-	cb.set_speedup(config::kPortNumber);	// speedup n
+	cb.set_speedup(config::kPortCount);	// speedup n
 	cb.set_traffic_model(config::kBernoulli);
 
 #if 1
 	for (double p = 0; p <= 1; p += 0.1)
 	{
 		cout << "p = " << p << endl;
-		config::GeneratingRate = p;
+		config::Rate = p;
 
 		for (int i = 0; i < 1000; ++i)
 		{
@@ -78,10 +80,65 @@ void RunOutputQueuing()
 			<< "average delay = " << stat.total_delay / stat.cell_count << endl;
 	}
 #else
+	double p = .5;
+	cout << "p = " << p << endl;
+	config::Rate = p;
 
+	for (int i = 0; i < 1000; ++i)
+	{
+		//cout << "i = " << i << endl;
+
+		cb.Egress();
+		cb.NextStep();
+		cb.Ingress();
+
+
+		g_sim->Elapse();
+	}
 
 #endif
 
+}
+
+void RunVOQ(schedule::Scheduling in)
+{
+	Crossbar cb;
+	cb.set_queuing_type(config::kVirtualOutputQueuing);
+	cb.set_speedup(1);	// speedup n
+	cb.set_traffic_model(config::kBernoulli);
+	cb.set_algorithm(in);
+
+#if 1
+	for (double p = 0; p <= 1; p += 0.1)
+	{
+		cout << "p = " << p << endl;
+		config::Rate = p;
+
+		for (int i = 0; i < config::sim_duration; ++i)
+		{
+			//cout << "i = " << i << endl;
+
+			cb.Egress();
+			cb.NextStep();
+			cb.Ingress();
+
+			g_sim->Elapse();
+		}
+
+
+		cout << "cell count = " << stat.cell_count << endl
+			<< "average delay = " << stat.total_delay / stat.cell_count << endl;
+	}
+#else
+	config::Rate = 0.5;
+	
+	cb.Ingress();
+	cb.NextStep();
+	cb.Egress();
+
+	g_sim->Elapse();
+
+#endif
 }
 
 void init()
@@ -92,8 +149,16 @@ void init()
 int main()
 {
 	init();
-	RunInputQueuing();
+	//RunInputQueuing();
 	//RunOutputQueuing();
+	RunVOQ(schedule::kiSLIP);
+
+#if 0
+	for (int i = 0; i < 10; ++i)
+	{
+		cout << util::Uniform(1);
+	}
+#endif
 
 
 #if 0

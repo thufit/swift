@@ -8,10 +8,13 @@
 
 namespace schedule
 {
-	void MaximumMatching(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);
-	void PIM(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);	
-	void iSLIP(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber]);
-	void mwm();
+	enum Scheduling { kMaximumMatching, kPIM, kiSLIP};
+	//enum OutputSchedule { kFIFO};
+
+	void MaximumMatching(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount]);
+	void PIM(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount]);	
+	void iSLIP(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount]);
+	//void mwm();
 }
 
 #endif

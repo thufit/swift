@@ -36,11 +36,11 @@ void Crossbar::NextStep()
 
 	//for (int i = 0; i < config::kQueueNumber; ++i)
 	//{
-	//	if (Util::GenerateWithProbability(config::GeneratingRate))
+	//	if (Util::Probability(config::Rate))
 	//	{
 	//		Cell c = generate_cell();
 	//		c.set_src(i);
-	//		c.set_dest(Util::UniformGenerate(config::kQueueNumber));
+	//		c.set_dest(Util::Uniform(config::kQueueNumber));
 	//		//_iq._queue[i].Push(c);
 	//		_voq._queue[i][c.get_dest()].Push(c);
 	//	}
@@ -48,7 +48,7 @@ void Crossbar::NextStep()
 	//cout << "222222222222" << endl;
 
 #if 0
-	int request[config::kPortNumber][config::kPortNumber];
+	int request[config::kPortCount][config::kPortCount];
 	SetMap(request);
 #endif
 
@@ -62,8 +62,8 @@ void Crossbar::NextStep()
 	//}
 
 #if 0
-	int grant[config::kPortNumber];
-	for (int i = 0; i < config::kPortNumber; ++i)
+	int grant[config::kPortCount];
+	for (int i = 0; i < config::kPortCount; ++i)
 		grant[i] = -1;
 	schedule::MaximumMatching(request, grant);
 #endif
@@ -96,21 +96,21 @@ void Crossbar::NextStep()
 	for (int i = 0; i < speedup_; ++i)
 	{
 		queuing_->SetMap();
-		queuing_->Switch();
+		queuing_->Switch(algorithm_);
 	}
 }
 
 #if 0
 // set the request map
-void Crossbar::SetMap(int a[config::kPortNumber][config::kPortNumber])
+void Crossbar::SetMap(int a[config::kPortCount][config::kPortCount])
 {
-	for (int i = 0; i < config::kPortNumber; ++i)
-		for (int j = 0; j < config::kPortNumber; ++j)
+	for (int i = 0; i < config::kPortCount; ++i)
+		for (int j = 0; j < config::kPortCount; ++j)
 			a[i][j] = 0;
 
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			if (!voq_.queue_[i][j].Empty())
 			{
@@ -126,8 +126,8 @@ void Crossbar::SetMap(int a[config::kPortNumber][config::kPortNumber])
 void Crossbar::Ingress()
 {
 	// generation and insertion
-	vector<Cell> vc(config::kPortNumber);
-	traffic::BernoulliDistribution(vc, config::GeneratingRate);
+	vector<Cell> vc(config::kPortCount);
+	traffic::Bernoulli(vc, config::Rate);
 
 	//cout << "in Ingress" << endl;
 #if 0
@@ -154,7 +154,7 @@ void Crossbar::Ingress()
 
 void Crossbar::Egress()
 {
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
 		queuing_->Dequeue(i);
 	}
@@ -189,3 +189,13 @@ void Crossbar::set_traffic_model(config::TrafficModel t)
 {
 	traffic_model_ = t;
 }
+
+void Crossbar::set_algorithm(schedule::Scheduling in)
+{
+	algorithm_ = in;
+}
+
+//void Crossbar::set_output_algorithm(schedule::OutputSchedule out)
+//{
+//	output_algorithm_ = out;
+//}

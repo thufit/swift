@@ -10,8 +10,8 @@ using std::vector;
 
 namespace traffic
 {
-	void BernoulliDistribution(vector<Cell>& vc, double p);
-	void OnOff();
+	void Bernoulli(vector<Cell>& vc, double p); // Bounuli i.i.d
+	void OnOff(vector<Cell>& vc, double p, double q);
 }
 
 #endif

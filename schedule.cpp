@@ -36,23 +36,23 @@ static bool can(int t)
     return false;
 }
 
-void schedule::MaximumMatching(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber])
+void schedule::MaximumMatching(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount])
 {
     int num = 0;
-	n = config::kPortNumber;
-	m = config::kPortNumber;
+	n = config::kPortCount;
+	m = config::kPortCount;
 
-	for (int i = 0; i < config::kPortNumber; ++i)
-		for (int j = 0; j < config::kPortNumber; ++j)
+	for (int i = 0; i < config::kPortCount; ++i)
+		for (int j = 0; j < config::kPortCount; ++j)
 			map[i][j] = request[i][j];
 
     memset(link, -1, sizeof(link));
 
 #if 0
 	cout << "map = \n";
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			cout << map[i][j] << ",";
 		}
@@ -67,7 +67,7 @@ void schedule::MaximumMatching(int request[config::kPortNumber][config::kPortNum
             num++;
     }
 
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
 		//cout << "link[" << i << "] = " << link[i] << endl;
 		if (link[i] != -1)
@@ -83,17 +83,17 @@ void schedule::MaximumMatching(int request[config::kPortNumber][config::kPortNum
 }
 
 // Parallel Iterative Matching
-void schedule::PIM(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber])
+void schedule::PIM(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount])
 {
-	int matched[config::kPortNumber] = {0};
+	int matched[config::kPortCount] = {0};
 	
-	vector<int> r[config::kPortNumber];
-	vector<int> g[config::kPortNumber];
+	vector<int> r[config::kPortCount];
+	vector<int> g[config::kPortCount];
 
 	// Step 1: Request
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			if (request[i][j] == 1)
 				g[j].push_back(i);
@@ -101,18 +101,20 @@ void schedule::PIM(int request[config::kPortNumber][config::kPortNumber], int gr
 	}
 
 	// Step 2: Grant
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		int t = util::UniformGenerate(g[i].size());
-		r[g[i][t]].push_back(i);
+		if (!g[i].empty()){
+			int t = util::Uniform(g[i].size());
+			r[g[i][t]].push_back(i);
+		}
 	}
 
 	// Step 3: Accept
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
 		if (r[i].size() >= 1)
 		{
-			int t = util::UniformGenerate(r[i].size());
+			int t = util::Uniform(r[i].size());
 			grant[i] = r[i][t];
 			matched[i] = 1;
 		}
@@ -124,22 +126,22 @@ void schedule::PIM(int request[config::kPortNumber][config::kPortNumber], int gr
 
 }
 
-void schedule::iSLIP(int request[config::kPortNumber][config::kPortNumber], int grant[config::kPortNumber])
+void schedule::iSLIP(int request[config::kPortCount][config::kPortCount], int grant[config::kPortCount])
 {
 	static int grant_pointer = 0;
 	static int accept_pointer = 0;
 
-	int matched[config::kPortNumber] = {0};
-	int a[config::kPortNumber][config::kPortNumber];
-	int g[config::kPortNumber][config::kPortNumber];
+	int matched[config::kPortCount] = {0};
+	int a[config::kPortCount][config::kPortCount];
+	int g[config::kPortCount][config::kPortCount];
 
-	fill_n(&a[0][0], config::kPortNumber * config::kPortNumber, 0);
-	fill_n(&g[0][0], config::kPortNumber * config::kPortNumber, 0);
+	fill_n(&a[0][0], config::kPortCount * config::kPortCount, 0);
+	fill_n(&g[0][0], config::kPortCount * config::kPortCount, 0);
 
 	// Step 1: Request
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			if (request[i][j] == 1)
 				g[j][i] = 1;
@@ -147,36 +149,35 @@ void schedule::iSLIP(int request[config::kPortNumber][config::kPortNumber], int 
 	}
 
 	// Step 2: Grant
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			if (g[i][grant_pointer] == 1)
 			{
 				a[grant_pointer][i] = 1;
-				grant_pointer = (grant_pointer + 1) % config::kPortNumber;
+				grant_pointer = (grant_pointer + 1) % config::kPortCount;
 				
 				break;
 			}
-			grant_pointer = (grant_pointer + 1) % config::kPortNumber;
+			grant_pointer = (grant_pointer + 1) % config::kPortCount;
 		}
 	}
 
 	// Step 3: Accept
-	for (int i = 0; i < config::kPortNumber; ++i)
+	for (int i = 0; i < config::kPortCount; ++i)
 	{
-		for (int j = 0; j < config::kPortNumber; ++j)
+		for (int j = 0; j < config::kPortCount; ++j)
 		{
 			if (a[i][accept_pointer] == 1)
 			{
 				grant[i] = accept_pointer;
-				accept_pointer = (accept_pointer + 1) % config::kPortNumber;
+				accept_pointer = (accept_pointer + 1) % config::kPortCount;
 				break;
 			}
-			accept_pointer = (accept_pointer + 1) % config::kPortNumber;
+			accept_pointer = (accept_pointer + 1) % config::kPortCount;
 
 		}
 
 	}
-
 }
