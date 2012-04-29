@@ -1,4 +1,4 @@
-#include "queuingmodel.h"
+#include "ioqueuing.h"
 #include "cell.h"
 #include "config.h"
 #include "simulator.h"
@@ -72,9 +72,9 @@ void VOQ::Enqueue(int port, const Cell& c)
 	queue_[port][c.get_dest()].Push(c);
 }
 
-void VOQ::Dequeue(int port, int sequence)
+void VOQ::Dequeue(int port)
 {
-	queue_[port][sequence].Pop();
+	//queue_[port][sequence].Pop();
 }
 
 
@@ -93,7 +93,14 @@ void IQ::Enqueue(int port, const Cell& c)
 
 void IQ::Dequeue(int port)
 {
-	queue_[port].Pop();
+	if (!cell_out_[port].Empty()) 
+	{
+		Cell c = cell_out_[port];
+		//std::cout << "cell" << i << "is switched to " << grant_[i] << std::endl;
+		stat.cell_count++;
+		stat.total_delay += g_sim->get_time() - c.get_birth();
+		cell_out_[port].set_empty();
+	}
 }
 
 void IQ::SetMap()
@@ -133,9 +140,7 @@ void IQ::Switch()
 			//std::cout<< "++++" << std::endl;
 			cell_out_[grant_[i]] = c;
 			queue_[i].Pop();
-			//std::cout << "cell" << i << "is switched to " << grant_[i] << std::endl;
-			stat.cell_count++;
-			stat.total_delay += g_sim->get_time() - c.get_birth();
+
 		}
 	}
 }
@@ -150,10 +155,36 @@ OQ::~OQ()
 
 void OQ::Enqueue(int port, const Cell& c)
 {
-	queue_[port].Push(c);
+	cell_in_[port] = c;
+	//queue_[port].Push(c);
 }
 
-void OQ::Dequeue(int port, int sequence)
+void OQ::Dequeue(int port)
 {
-	queue_[port].Pop();
+	if (!queue_[port].Empty())
+	{
+		// add scheduling algorithm here, like QoS
+
+		Cell c = queue_[port].Top();
+		queue_[port].Pop();
+		//std::cout << "cell" << i << "is switched to " << grant_[i] << std::endl;
+		stat.cell_count++;
+		stat.total_delay += g_sim->get_time() - c.get_birth();
+	}
+}
+
+void OQ::Switch()
+{
+	//std::cout << "...";
+	schedule::MaximumMatching(map_, grant_);
+
+	for (int i = 0; i < config::kPortNumber; ++i)
+	{
+		if (grant_[i] != -1)
+		{
+			Cell c = cell_in_[i];
+			cell_in_[i].set_empty();
+			queue_[i].Push(c);
+		}
+	}
 }

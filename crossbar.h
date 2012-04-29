@@ -5,7 +5,7 @@
 #include "queue.h"
 #include "config.h"
 #include "simulator.h"
-#include "queuingmodel.h"
+#include "ioqueuing.h"
 
 class Crossbar
 {

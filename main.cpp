@@ -34,8 +34,11 @@ void RunInputQueuing()
 		for (int i = 0; i < 1000; ++i)
 		{
 			//cout << "i = " << i << endl;
-			cb.Ingress();
+
+			cb.Egress();
 			cb.NextStep();
+			cb.Ingress();
+
 			g_sim->Elapse();
 		}
 
@@ -47,7 +50,37 @@ void RunInputQueuing()
 
 void RunOutputQueuing()
 {
+	Crossbar cb;
+	cb.set_queuing_type(config::kOutputQueuing);
+	cb.set_speedup(config::kPortNumber);	// speedup n
+	cb.set_traffic_model(config::kBernoulli);
 
+#if 1
+	for (double p = 0; p <= 1; p += 0.1)
+	{
+		cout << "p = " << p << endl;
+		config::GeneratingRate = p;
+
+		for (int i = 0; i < 1000; ++i)
+		{
+			//cout << "i = " << i << endl;
+
+			cb.Egress();
+			cb.NextStep();
+			cb.Ingress();
+
+
+			g_sim->Elapse();
+		}
+
+
+		cout << "cell count = " << stat.cell_count << endl
+			<< "average delay = " << stat.total_delay / stat.cell_count << endl;
+	}
+#else
+
+
+#endif
 
 }
 
@@ -60,6 +93,7 @@ int main()
 {
 	init();
 	RunInputQueuing();
+	//RunOutputQueuing();
 
 
 #if 0

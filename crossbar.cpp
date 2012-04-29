@@ -92,9 +92,12 @@ void Crossbar::NextStep()
 		}
 	}
 #endif
-	queuing_->SetMap();
-	queuing_->Switch();
 
+	for (int i = 0; i < speedup_; ++i)
+	{
+		queuing_->SetMap();
+		queuing_->Switch();
+	}
 }
 
 #if 0
@@ -151,7 +154,10 @@ void Crossbar::Ingress()
 
 void Crossbar::Egress()
 {
-
+	for (int i = 0; i < config::kPortNumber; ++i)
+	{
+		queuing_->Dequeue(i);
+	}
 }
 
 void Crossbar::set_queuing_type(config::QueuingType t)

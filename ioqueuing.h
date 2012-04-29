@@ -42,9 +42,15 @@ class OQ : public BasicQueuing
 public:
 	OQ();
 	~OQ();
+	void Enqueue(int port, const Cell& c);
+	void Dequeue(int port);
+	void Switch();
 private:
-	Queue queue_[config::kPortNumber];
+	Queue queue_[config::kPortNumber];	// output queue
 };
+
+
+
 
 class VOQ : public BasicQueuing
 {
